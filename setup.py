@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-
+#
+# Copyright (c) 2020 Idiap Research Institute, http://www.idiap.ch/
+# Written by Angelos Katharopoulos <angelos.katharopoulos@idiap.ch>,
+# Apoorv Vyas <avyas@idiap.ch>
+#
+"""Setup fast transformers"""
 from functools import lru_cache
 from itertools import dropwhile
 import os
@@ -7,6 +12,7 @@ from os import path
 from setuptools import find_packages, setup
 from subprocess import DEVNULL, call
 import sys
+
 
 @lru_cache(None)
 def cuda_toolkit_available():
