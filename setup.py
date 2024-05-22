@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-#
-# Copyright (c) 2020 Idiap Research Institute, http://www.idiap.ch/
-# Written by Angelos Katharopoulos <angelos.katharopoulos@idiap.ch>,
-# Apoorv Vyas <avyas@idiap.ch>
-#
-
-"""Setup fast transformers"""
 
 from functools import lru_cache
 from itertools import dropwhile
@@ -15,20 +8,6 @@ from setuptools import find_packages, setup
 from subprocess import DEVNULL, call
 import sys
 
-
-try:
-    import torch
-    from torch.utils.cpp_extension import BuildExtension, CppExtension
-except ImportError as e:
-    raise ImportError(
-        ("PyTorch is required to install pytorch-fast-transformers. Please "
-         "install your favorite version of PyTorch, we support 1.3.1, 1.5.0 "
-         "and >=1.6"),
-        name=e.name,
-        path=e.path
-    ) from e
-
-
 @lru_cache(None)
 def cuda_toolkit_available():
     try:
@@ -36,7 +15,6 @@ def cuda_toolkit_available():
         return True
     except FileNotFoundError:
         return False
-
 
 def collect_docstring(lines):
     """Return document docstring if it exists"""
@@ -48,7 +26,6 @@ def collect_docstring(lines):
             break
 
     return doc[3:-4].replace("\r", "").replace("\n", " ")
-
 
 def collect_metadata():
     meta = {}
@@ -62,7 +39,6 @@ def collect_metadata():
 
     return meta
 
-
 @lru_cache()
 def _get_cpu_extra_compile_args():
     base_args = ["-fopenmp", "-ffast-math"]
@@ -72,16 +48,18 @@ def _get_cpu_extra_compile_args():
     else:
         return base_args
 
-
 @lru_cache()
 def _get_gpu_extra_compile_args():
+    import torch
     if torch.cuda.is_available():
         return []
     else:
         return ["-arch=compute_60"]
 
-
 def get_extensions():
+    import torch
+    from torch.utils.cpp_extension import CppExtension, CUDAExtension
+
     extensions = [
         CppExtension(
             "fast_transformers.hashing.hash_cpu",
@@ -134,7 +112,6 @@ def get_extensions():
         )
     ]
     if cuda_toolkit_available():
-        from torch.utils.cpp_extension import CUDAExtension
         extensions += [
             CUDAExtension(
                 "fast_transformers.hashing.hash_cuda",
@@ -195,12 +172,15 @@ def get_extensions():
         ]
     return extensions
 
-
 def setup_package():
     with open("README.rst") as f:
         long_description = f.read()
     meta = collect_metadata()
     version_suffix = os.getenv("FAST_TRANSFORMERS_VERSION_SUFFIX", "")
+
+    import torch
+    from torch.utils.cpp_extension import BuildExtension
+
     setup(
         name="pytorch-fast-transformers",
         version=meta["version"] + version_suffix,
@@ -225,7 +205,6 @@ def setup_package():
         cmdclass={"build_ext": BuildExtension},
         install_requires=["torch"]
     )
-
 
 if __name__ == "__main__":
     setup_package()
