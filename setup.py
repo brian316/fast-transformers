@@ -10,17 +10,8 @@ from itertools import dropwhile
 import os
 from os import path
 from setuptools import find_packages, setup
-from setuptools.build_meta import get_requires_for_build_wheel
 from subprocess import DEVNULL, call
 import sys
-
-
-# Fetch the dependencies of A (including torch)
-a_dependencies = get_requires_for_build_wheel('.')
-# Extract the version of torch used by A
-torch_version = next((dep.split('==')[1] for dep in a_dependencies if dep.startswith('torch')), None)
-if torch_version is None:
-    raise RuntimeError("torch version not found in A's dependencies")
 
 
 @lru_cache(None)
@@ -219,7 +210,7 @@ def setup_package():
         ext_modules=get_extensions(),
         cmdclass={"build_ext": BuildExtension},
         install_requires=[
-            f'torch=={torch_version}',
+            'torch>=x.y.z',
         ]
     )
 
