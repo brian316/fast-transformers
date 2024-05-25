@@ -1,13 +1,10 @@
-# [build-system]
-# build-backend = "setuptools.build_meta"
-# requires = ["setuptools", "wheel"]
-# requires = [
-#   "setuptools==68.0.0",
-#   "wheel",
-#   "torch==2.0.1",
-#   "torchvision==0.15.2",
-#   "torchaudio==2.0.2"
-# ]
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools",
+  "wheel",
+  "torch",
+]
 
 [project]
 name = "pytorch-fast-transformers"
@@ -16,9 +13,9 @@ description = "Fast Transformers for PyTorch"
 readme = "README.rst"
 requires-python = ">=3.6"
 license = {file = "LICENSE"}
-dependencies = [
-    "torch"
-]
+# dependencies = [
+#     "torch"
+# ]
 
 [tool.pip]
 # extra-index-url = "https://download.pytorch.org/whl/cu118"
